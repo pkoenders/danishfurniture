@@ -4,7 +4,7 @@ import Layout from "../components/layout"
 import Img from 'gatsby-image'
 import SimpleReactLightbox from "simple-react-lightbox"
 import { SRLWrapper } from "simple-react-lightbox"
-import mediumZoom from 'medium-zoom'
+
 
 import "react-responsive-carousel/lib/styles/carousel.min.css" // requires a loader
 import { Carousel } from 'react-responsive-carousel'
@@ -22,7 +22,7 @@ const ProductPage = ({ data }) => {
     currency: 'NZD',
   });
 
-  mediumZoom('.medium-zoom-image')
+
 
   //Carousel props
   const getConfigurableProps = () => ({
