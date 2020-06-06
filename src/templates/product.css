@@ -1,0 +1,17 @@
+.carousel img {
+    pointer-events: visible !important;
+  }
+  
+  .carouselImg img {
+    pointer-events: visible !important;
+  }
+
+
+  .carousel .thumb img {
+    pointer-events: none !important;
+}
+
+  
+  .medium-zoom-image {
+    pointer-events: visible !important;
+  }

@@ -1,20 +1,27 @@
 import React from "react"
 import { graphql } from 'gatsby'
 import Layout from "../components/layout"
-// import Img from 'gatsby-image'
-// import SimpleReactLightbox from "simple-react-lightbox"
-// import { SRLWrapper } from "simple-react-lightbox"
+//import mediumZoom from 'medium-zoom'
+import Img from 'gatsby-image'
+import SimpleReactLightbox from 'simple-react-lightbox'
+import { SRLWrapper } from 'simple-react-lightbox'
+
+import "./product.css"
+
 
 
 import "react-responsive-carousel/lib/styles/carousel.min.css" // requires a loader
 import { Carousel } from 'react-responsive-carousel'
 
 
+//import ReactImageMagnify from 'react-image-magnify'
+
+
 const ProductPage = ({ data }) => {
 
   const product = data.shopifyProduct
 
-  console.log("Price = " + product.variants.price)
+  //console.log("Price = " + data.shopifyProduct.variants.price)
 
   // Create our number formatter.
   const currencyFormat = new Intl.NumberFormat('en-US', {
@@ -23,7 +30,7 @@ const ProductPage = ({ data }) => {
   });
 
   //Quantity counter 
-  function quantityCounter(e) {
+  function countQuantity(e) {
     let countThis = e.target.name
     let inputVal = parseInt(document.querySelector(".quantity-input").value)
     if (countThis === 'add') {
@@ -53,14 +60,29 @@ const ProductPage = ({ data }) => {
     swipeable: true,
     dynamicHeight: true,
     emulateTouch: true,
-    thumbWidth: 100,
+    //thumbWidth: 100,
     selectedItem: 0,
     interval: 3000,
     transitionTime: 150,
     swipeScrollTolerance: 5,
   });
 
-  // SLB props
+
+  // function handleClickZoom(e) {
+  //   e.preventDefault();
+  //   const ZoomImg = mediumZoom('.medium-zoom-image')
+  //   ZoomImg.open()
+  // }
+
+
+  //Zoom Props
+
+  // const rimProps = {
+  //   enlargedImagePosition: 'over',
+  //   //enlargedImageContainerDimensions: '200%'
+  // }
+
+  //SLB props
   const lightBoxOptions = {
     settings: {
       overlayColor: '#ffffff',
@@ -75,11 +97,18 @@ const ProductPage = ({ data }) => {
       iconColor: '#ffffff',
       size: '42px',
 
+      //showThumbnailsButton: false,
+
+
       showAutoplayButton: false,
       showCloseButton: true,
       showDownloadButton: false,
       showFullscreenButton: false,
 
+    },
+
+    thumbnails: {
+      showThumbnails: false,
     },
     caption: {
       showCaption: false,
@@ -92,49 +121,45 @@ const ProductPage = ({ data }) => {
     <>
       <Layout>
         <h1>{product.title}</h1>
-        <p>{currencyFormat.format(product.priceRange.maxVariantPrice.amount)}</p>
-        <p>{currencyFormat.format(product.variants.price)}</p>
-        <p>{product.variants.price}</p>
+        <p>{currencyFormat.format(product.variants[0].price)}</p>
 
-        <Carousel {...getConfigurableProps()}>
-          {product.images.map((image, i) => (
-            <img
-              className='medium-zoom-image'
-              key={i}
-              width='100%'
-              src={image.localFile.url}
-              alt={product.title}
-              //data-attribute='SRL'
-              loading='lazy'
-            //style="pointerEvents: visible;"
-            />
-          ))}
-        </Carousel>
-
-        {/* <SimpleReactLightbox>
+        <SimpleReactLightbox>
           <SRLWrapper options={lightBoxOptions}>
-            <Carousel {...getConfigurableProps()}>
+            <Carousel {...getConfigurableProps()} >
               {product.images.map((image, i) => (
                 <div key={i}>
-                  <Img
-                    fluid={image.localFile.childImageSharp.fluid}
+                  <img
+                    width='100%'
+                    //fluid={image.localFile.childImageSharp.fluid}
                     src={image.localFile.url}
                     alt={product.title}
+                    data-attribute="SRL"
+                    className='carouselImg'
                   />
+
+
+                  {/* <img
+                    width='100%'
+                    //fluid={image.localFile.childImageSharp.fluid}
+                    src={image.localFile.url}
+                    alt={product.title}
+                  /> */}
+
+
                 </div>
               ))}
             </Carousel>
           </SRLWrapper>
-        </SimpleReactLightbox> */}
+        </SimpleReactLightbox>
 
-        <div className="quantity-group">
+        < div className="quantity-group" >
           <label htmlFor="Quantity" className="quantity-label">Quantity:</label>
           <div className="quantity" data-required-text="Please enter a quantity.">
             <button
               type="button"
               className="quantity-decrease"
               name="subtract"
-              onClick={quantityCounter}>
+              onClick={countQuantity}>
               –
             </button>
             <input type="number" className="quantity-input" name="Quantity" size="2" min="1" max="100" maxLength="3" defaultValue="1" />
@@ -142,13 +167,12 @@ const ProductPage = ({ data }) => {
               type="button"
               className="quantity-increase"
               name="add"
-              onClick={quantityCounter}>
+              onClick={countQuantity}>
               +
             </button>
           </div>
         </div>
 
-        <p>{product.variants.title}</p>
         <button
           type="button"
           className="btn-primary"
@@ -156,13 +180,8 @@ const ProductPage = ({ data }) => {
           Add to cart
         </button>
 
-        <p>{data.shopifyProduct.variants.sku}</p>
-
-        (description)
-        <div dangerouslySetInnerHTML={{ __html: product.description }} />
-        <br />
-        (descriptionHtml)
         <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+        <p>SKU {product.variants[0].sku}</p>
 
 
       </Layout>
@@ -172,40 +191,20 @@ const ProductPage = ({ data }) => {
 
 export const query = graphql`
   query($handle: String!) {
+
     shopifyProduct(handle: { eq: $handle }) {
-
-      variants {
-        price
-        sku
-        title
-      }
-
-      id
+      
       title
       handle
-      productType
       description
       descriptionHtml
-      shopifyId
-      options {
-        id
-        name
-        values
-      }
-      
       priceRange {
-        minVariantPrice {
-          amount
-          currencyCode
-        }
         maxVariantPrice {
           amount
-          currencyCode
         }
       }
+
       images {
-        originalSrc
-        id
         localFile {
           url
           childImageSharp {
@@ -215,6 +214,13 @@ export const query = graphql`
           }
         }
       }
+
+      variants {
+        sku
+        price
+      }
+      vendor
+
     }
   }
 `
