@@ -181,7 +181,12 @@ const ProductPage = ({ data }) => {
         </button>
 
         <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-        <p>SKU {product.variants[0].sku}</p>
+
+        {product.variants[0].sku &&
+          <p>SKU {product.variants[0].sku}</p>
+        }
+
+
 
 
       </Layout>
