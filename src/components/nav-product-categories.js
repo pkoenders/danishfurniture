@@ -28,8 +28,6 @@ function NavProductCateories() {
         }
     `)
 
-
-
     return (
         <>
             <h2> Product categories (collections)</h2>
@@ -46,9 +44,7 @@ function NavProductCateories() {
                                 <Img
                                     width='50%'
                                     fluid={edge.node.image.localFile.childImageSharp.fluid}
-
                                     //src={edge.node.image.localFile.url}
-
                                     alt={edge.node.title}
                                 />
                             }
